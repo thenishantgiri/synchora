@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -13,6 +14,8 @@ import { useCurrentUser } from "../api/use-current-user";
 import { Loader, LogOut } from "lucide-react";
 
 export const UserButton = () => {
+  const router = useRouter();
+
   const { signOut } = useAuthActions();
   const { data, isLoading } = useCurrentUser();
 
@@ -29,6 +32,11 @@ export const UserButton = () => {
   const avatarFallback =
     name?.charAt(0).toUpperCase() || email?.charAt(0).toUpperCase();
 
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/auth");
+  };
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="outline-none relative" asChild>
@@ -40,7 +48,7 @@ export const UserButton = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" side="right" className="w-60">
-        <DropdownMenuItem onClick={() => signOut()} className="h-10ß">
+        <DropdownMenuItem onClick={handleLogout} className="h-10ß">
           <LogOut className="size-4 mr-2" />
           Log out
         </DropdownMenuItem>

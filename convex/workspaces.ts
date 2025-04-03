@@ -3,6 +3,15 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { auth } from "./auth";
 
+const generateCode = () => {
+  const code = Array.from(
+    { length: 6 },
+    () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 36)]
+  ).join("");
+
+  return code;
+};
+
 export const create = mutation({
   args: {
     name: v.string(),
@@ -14,12 +23,18 @@ export const create = mutation({
       throw new Error("User not authenticated");
     }
 
-    const joinCode = "123456"; // TODO: Generate a unique join code
+    const joinCode = generateCode();
 
     const workspaceId = await ctx.db.insert("workspaces", {
       name: args.name,
       userId,
       joinCode,
+    });
+
+    await ctx.db.insert("members", {
+      userId,
+      workspaceId,
+      role: "admin",
     });
 
     return workspaceId;
@@ -28,8 +43,35 @@ export const create = mutation({
 
 export const get = query({
   args: {},
-  handler: async ({ db }) => {
-    return await db.query("workspaces").collect();
+  handler: async (ctx) => {
+    // Get current authenticated user
+    const userId = await auth.getUserId(ctx);
+
+    // If no user is logged in, return empty array
+    if (!userId) {
+      return [];
+    }
+
+    // Get all "members" entries where userId matches
+    const members = await ctx.db
+      .query("members")
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
+      .collect();
+
+    // Extract workspaceIds from members
+    const workspaceIds = members.map((member) => member.workspaceId);
+
+    // For each workspaceId, fetch workspace details
+    const workspaces = [];
+    for (const workspaceId of workspaceIds) {
+      const workspace = await ctx.db.get(workspaceId);
+      if (workspace) {
+        workspaces.push(workspace);
+      }
+    }
+
+    // Return list of workspaces
+    return workspaces;
   },
 });
 
@@ -38,8 +80,21 @@ export const getById = query({
   handler: async (ctx, args) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      throw new Error("User not authenticated");
+      return null;
     }
+
+    // Check if the user is a member of the workspace
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.id).eq("userId", userId)
+      )
+      .unique();
+
+    if (!member) {
+      return null;
+    }
+
     return await ctx.db.get(args.id);
   },
 });

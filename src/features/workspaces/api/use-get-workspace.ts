@@ -1,4 +1,4 @@
-import { useQuery } from "convex/react";
+import { useQuery, useConvexAuth } from "convex/react";
 
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
@@ -8,8 +8,14 @@ interface UseGetWorkspaceProps {
 }
 
 export const useGetWorkspace = ({ id }: UseGetWorkspaceProps) => {
-  const data = useQuery(api.workspaces.getById, { id });
-  const isLoading = data === undefined;
+  const { isAuthenticated } = useConvexAuth();
+
+  const data = useQuery(
+    api.workspaces.getById,
+    isAuthenticated ? { id } : "skip"
+  );
+
+  const isLoading = isAuthenticated && data === undefined;
 
   return { data, isLoading };
 };

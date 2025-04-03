@@ -41,7 +41,12 @@ export const WorkspaceSwitcher = () => {
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="bottom" align="start" className="w-64">
+      <DropdownMenuContent
+        side="bottom"
+        align="start"
+        className="w-64 animate-fade-in pointer-events-auto"
+        style={{ animationDelay: "50ms" }}
+      >
         <DropdownMenuItem
           onClick={() => router.push(`/workspace/${workspaceId}`)}
           className="cursor-pointer flex-col justify-start items-start capitalize"
@@ -64,7 +69,10 @@ export const WorkspaceSwitcher = () => {
             <p className="truncate">{workspace.name}</p>
           </DropdownMenuItem>
         ))}
-        <DropdownMenuItem onClick={() => setOpen(true)}>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => setOpen(true)}
+        >
           <div className="size-9 relative overflow-hidden bg-[#F2F2F2] text-slate-800 font-semibold text-lg rounded-md flex items-center justify-center mr-2">
             <Plus />
           </div>
