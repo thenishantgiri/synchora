@@ -44,9 +44,14 @@ export const SidebarItem = ({
       className={cn(sidebarItemVariants({ variant }))}
       asChild
     >
-      <Link href={`/workspace/${workspaceId}/channel/${id}`}>
+      <Link
+        href={`/workspace/${workspaceId}/channel/${id}`}
+        aria-label={`Navigate to ${label} channel`}
+      >
         <Icon className="size-3.5 mr-1 shrink-0" />
-        <span className="text-sm truncate">{label}</span>
+        <span className="text-sm truncate" title={label}>
+          {label}
+        </span>
       </Link>
     </Button>
   );

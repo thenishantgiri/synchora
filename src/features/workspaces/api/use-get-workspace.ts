@@ -16,6 +16,7 @@ export const useGetWorkspace = ({ id }: UseGetWorkspaceProps) => {
   );
 
   const isLoading = isAuthenticated && data === undefined;
+  const isError = !isLoading && data === null;
 
-  return { data, isLoading };
+  return { data, isLoading, isError };
 };

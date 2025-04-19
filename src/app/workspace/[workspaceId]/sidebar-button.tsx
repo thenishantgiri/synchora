@@ -23,6 +23,7 @@ export const SidebarButton = ({
           "size-9 p-2 group-hover:bg-accent/20",
           isActive && "bg-accent/20"
         )}
+        aria-label={label}
       >
         <Icon className="size-5 text-white group-hover:scale-110 transition-all" />
       </Button>

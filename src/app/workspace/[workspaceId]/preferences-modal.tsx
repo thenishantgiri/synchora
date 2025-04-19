@@ -58,25 +58,23 @@ export const PreferencesModal = ({
           toast.success("Workspace deleted successfully");
           router.replace("/");
         },
-        onError: () => {
-          toast.error("Failed to delete workspace");
-        },
       }
     );
   };
 
   const handleEdit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (value.trim() === initialValue.trim()) {
+      toast.error("No changes made to the workspace name");
+      return;
+    }
 
     updateWorkspace(
-      { id: workspaceId, name: value },
+      { id: workspaceId, name: value.trim() },
       {
         onSuccess() {
           toast.success("Workspace updated successfully");
           setEditOpen(false);
-        },
-        onError: () => {
-          toast.error("Failed to update workspace");
         },
       }
     );

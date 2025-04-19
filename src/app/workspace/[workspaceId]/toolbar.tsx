@@ -16,11 +16,13 @@ export const Toolbar = () => {
           className="bg-accent/25 hover:bg-accent-25 w-full justify-start h-7 px-2"
         >
           <Search className="size-4 text-white mr-2" />
-          <span className="text-white text-sm">Search {data?.name}</span>
+          <span className="text-white text-sm truncate">
+            Search {data?.name ?? "workspace"}
+          </span>
         </Button>
       </div>
       <div className="ml-auto flex flex-1 items-center justify-end">
-        <Button variant="transparent">
+        <Button variant="transparent" aria-label="Workspace Info">
           <Info className="size-5 text-white" />
         </Button>
       </div>

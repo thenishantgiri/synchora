@@ -3,6 +3,7 @@ import { useMutation } from "convex/react";
 
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { toast } from "sonner";
 
 type RequestType = { workspaceId: Id<"workspaces"> };
 type ResponseType = Id<"workspaces"> | null;
@@ -36,14 +37,19 @@ export const useNewJoinCode = () => {
         setStatus("pending");
 
         const response = await mutation(values);
+        setData(response);
         options?.onSuccess?.(response);
         return response;
       } catch (error) {
+        const err = error instanceof Error ? error : new Error("Unknown error");
+
+        setError(err);
         setStatus("error");
-        options?.onError?.(error as Error);
-        if (options?.throwError) {
-          throw error;
-        }
+
+        toast.error(err.message);
+
+        options?.onError?.(err);
+        if (options?.throwError) throw err;
       } finally {
         setStatus("settled");
         options?.onSettled?.();
@@ -52,5 +58,20 @@ export const useNewJoinCode = () => {
     [mutation]
   );
 
-  return { mutate, data, error, isPending, isSuccess, isError, isSettled };
+  const reset = () => {
+    setData(null);
+    setError(null);
+    setStatus(null);
+  };
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+    isError,
+    isSettled,
+    reset,
+  };
 };

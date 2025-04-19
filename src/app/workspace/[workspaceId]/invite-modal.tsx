@@ -1,4 +1,4 @@
-import { CopyIcon, RefreshCcw } from "lucide-react";
+import { CopyIcon, Loader, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 
 import { useNewJoinCode } from "@/features/workspaces/api/use-new-join-code";
@@ -46,9 +46,6 @@ export const InviteModal = ({
         onSuccess: () => {
           toast.success("Invite code regenerated!");
         },
-        onError: () => {
-          toast.error("Failed to regenerate invite code.");
-        },
       }
     );
   };
@@ -76,7 +73,13 @@ export const InviteModal = ({
             <p className="text-4xl font-bold tracking-widest uppercase">
               {joinCode}
             </p>
-            <Button onClick={handleCopy} variant={"ghost"} size={"sm"}>
+            <Button
+              onClick={handleCopy}
+              variant={"ghost"}
+              size={"sm"}
+              disabled={isPending}
+              aria-label="Copy invite link"
+            >
               Copy link
               <CopyIcon className="size-4 ml-2" />
             </Button>
@@ -88,7 +91,11 @@ export const InviteModal = ({
               disabled={isPending}
             >
               New code
-              <RefreshCcw className="size-4 ml-2" />
+              {isPending ? (
+                <Loader className="size-4 ml-2 animate-spin" />
+              ) : (
+                <RefreshCcw className="size-4 ml-2" />
+              )}
             </Button>
             <DialogClose asChild>
               <Button>Close</Button>

@@ -37,6 +37,7 @@ export const WorkspaceSection = ({
           variant={"transparent"}
           size={"sm"}
           className="group px-1.5 text-sm text-[#f9edffcc] h-[28px] justify-start overflow-hidden items-center"
+          aria-label={on ? "Collapse section" : "Expand section"}
         >
           <span className="truncate">{label}</span>
         </Button>
@@ -47,6 +48,7 @@ export const WorkspaceSection = ({
               variant={"transparent"}
               size={"iconSm"}
               className="opacity-0 group-hover:opacity-100 transition-opacity ml-auto p-0.5 text-sm text-[#f9edffcc] size-6 shrink-0"
+              aria-label={`Create new ${label}`}
             >
               <PlusIcon className="size-5" />
             </Button>

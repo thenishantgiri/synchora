@@ -15,7 +15,7 @@ export const get = query({
   handler: async (ctx, { workspaceId }) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      return [];
+      throw new Error("User not authenticated");
     }
 
     const member = await ctx.db
@@ -26,7 +26,7 @@ export const get = query({
       .unique();
 
     if (!member) {
-      return [];
+      throw new Error("User is not a member of this workspace");
     }
 
     const data = await ctx.db
@@ -57,7 +57,7 @@ export const current = query({
     const userId = await auth.getUserId(ctx);
 
     if (!userId) {
-      return null;
+      throw new Error("User not authenticated");
     }
 
     const member = await ctx.db
@@ -68,7 +68,7 @@ export const current = query({
       .unique();
 
     if (!member) {
-      return null;
+      throw new Error("User is not a member of this workspace");
     }
 
     return member;

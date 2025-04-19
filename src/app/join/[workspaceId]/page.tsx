@@ -5,7 +5,7 @@ import Link from "next/link";
 import VerificationInput from "react-verification-input";
 import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader } from "lucide-react";
+import { Loader, TriangleAlert } from "lucide-react";
 
 import { useGetWorkspaceInfo } from "@/features/workspaces/api/use-get-workspace-info";
 import { useJoin } from "@/features/workspaces/api/use-join";
@@ -38,9 +38,6 @@ const JoinPage = () => {
           router.replace(`/workspace/${id}`);
           toast.success("Workspace joined successfully!");
         },
-        onError: () => {
-          toast.error("Failed to join workspace.");
-        },
       }
     );
   };
@@ -49,6 +46,17 @@ const JoinPage = () => {
     return (
       <div className="h-full flex items-center justify-center">
         <Loader className="size-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <TriangleAlert className="size-6 text-muted-foreground" />
+        <p className="text-muted-foreground">
+          Workspace not found or access denied.
+        </p>
       </div>
     );
   }
@@ -90,7 +98,7 @@ const JoinPage = () => {
         />
       </div>
       <div className="flex gap-x-4">
-        <Button size={"lg"} variant={"outline"} asChild>
+        <Button size={"lg"} variant={"outline"} asChild disabled={isPending}>
           <Link href={"/"}>Back to Home</Link>
         </Button>
       </div>

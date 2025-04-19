@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "convex/react";
+import { toast } from "sonner";
 
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
@@ -36,14 +37,17 @@ export const useRemoveWorkspace = () => {
         setStatus("pending");
 
         const response = await mutation(values);
+        setData(response);
         options?.onSuccess?.(response);
         return response;
       } catch (error) {
+        const err = error instanceof Error ? error : new Error("Unknown error");
+        setError(err);
         setStatus("error");
-        options?.onError?.(error as Error);
-        if (options?.throwError) {
-          throw error;
-        }
+
+        toast.error(err.message);
+
+        options?.onError?.(err);
       } finally {
         setStatus("settled");
         options?.onSettled?.();
@@ -52,5 +56,20 @@ export const useRemoveWorkspace = () => {
     [mutation]
   );
 
-  return { mutate, data, error, isPending, isSuccess, isError, isSettled };
+  const reset = () => {
+    setData(null);
+    setError(null);
+    setStatus(null);
+  };
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+    isError,
+    isSettled,
+    reset,
+  };
 };

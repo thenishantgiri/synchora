@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { useMutation } from "convex/react";
 
 import { api } from "../../../../convex/_generated/api";
@@ -39,10 +40,15 @@ export const useCreateChannel = () => {
         options?.onSuccess?.(response);
         return response;
       } catch (error) {
+        const err = error instanceof Error ? error : new Error("Unknown error");
+        setError(err);
         setStatus("error");
-        options?.onError?.(error as Error);
+
+        toast.error(err.message);
+
+        options?.onError?.(err);
         if (options?.throwError) {
-          throw error;
+          throw err;
         }
       } finally {
         setStatus("settled");
@@ -52,5 +58,20 @@ export const useCreateChannel = () => {
     [mutation]
   );
 
-  return { mutate, data, error, isPending, isSuccess, isError, isSettled };
+  const reset = () => {
+    setData(null);
+    setError(null);
+    setStatus(null);
+  };
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+    isError,
+    isSettled,
+    reset,
+  };
 };

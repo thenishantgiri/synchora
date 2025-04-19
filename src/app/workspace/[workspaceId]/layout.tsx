@@ -23,6 +23,7 @@ const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
         <ResizablePanelGroup
           direction={"horizontal"}
           autoSaveId="workspace-layout"
+          aria-label="Workspace Layout Panel Group"
         >
           <ResizablePanel
             defaultSize={20}

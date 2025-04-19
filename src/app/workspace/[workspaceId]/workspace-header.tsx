@@ -86,12 +86,20 @@ export const WorkspaceHeader = ({
         </DropdownMenu>
         <div className="flex items-center gap-0.5">
           <Hint label="Filter conversations" side="bottom">
-            <Button variant={"transparent"} size={"iconSm"}>
+            <Button
+              variant={"transparent"}
+              size={"iconSm"}
+              aria-label="Filter conversations"
+            >
               <ListFilter className="size-4" />
             </Button>
           </Hint>
           <Hint label="New Message" side="bottom">
-            <Button variant={"transparent"} size={"iconSm"}>
+            <Button
+              variant={"transparent"}
+              size={"iconSm"}
+              aria-label="Compose new message"
+            >
               <SquarePen className="size-4" />
             </Button>
           </Hint>

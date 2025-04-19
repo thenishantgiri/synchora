@@ -31,7 +31,19 @@ export const create = mutation({
       throw new Error("Channel name must be between 3 and 80 characters");
     }
 
-    const channelId = ctx.db.insert("channels", {
+    const existing = await ctx.db
+      .query("channels")
+      .withIndex("by_workspace_id", (q) => q.eq("workspaceId", workspaceId))
+      .filter((q) => q.eq(q.field("name"), parsedName))
+      .unique();
+
+    if (existing) {
+      throw new Error(
+        "A channel with this name already exists in this workspace"
+      );
+    }
+
+    const channelId = await ctx.db.insert("channels", {
       name: parsedName,
       workspaceId,
     });

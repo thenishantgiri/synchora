@@ -125,9 +125,8 @@ export const get = query({
     // Get current authenticated user
     const userId = await auth.getUserId(ctx);
 
-    // If no user is logged in, return empty array
     if (!userId) {
-      return [];
+      throw new Error("User not authenticated");
     }
 
     // Get all "members" entries where userId matches
@@ -158,7 +157,7 @@ export const getInfoById = query({
   handler: async (ctx, { id }) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      return null;
+      throw new Error("User not authenticated");
     }
 
     const member = await ctx.db
@@ -169,6 +168,9 @@ export const getInfoById = query({
       .unique();
 
     const workspace = await ctx.db.get(id);
+    if (!workspace) {
+      throw new Error("Workspace not found");
+    }
 
     return {
       name: workspace?.name,
@@ -182,7 +184,7 @@ export const getById = query({
   handler: async (ctx, args) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      return null;
+      throw new Error("User not authenticated");
     }
 
     // Check if the user is a member of the workspace
@@ -194,7 +196,7 @@ export const getById = query({
       .unique();
 
     if (!member) {
-      return null;
+      throw new Error("User is not a member of this workspace");
     }
 
     return await ctx.db.get(args.id);

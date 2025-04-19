@@ -45,6 +45,7 @@ export const UserItem = ({
       className={cn(userItemVariants({ variant }))}
       size={"sm"}
       asChild
+      aria-label={`Go to ${label}'s profile`}
     >
       <Link href={`/workspace/${workspaceId}/member/${id}`}>
         <Avatar className="size-5 rounded-md mr-1">

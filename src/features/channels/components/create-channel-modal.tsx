@@ -45,9 +45,6 @@ export const CreateChannelModal = () => {
           router.push(`/workspace/${workspaceId}/channel/${id}`);
           handleClose();
         },
-        onError: () => {
-          toast.error("Failed to create channel");
-        },
       }
     );
   };
