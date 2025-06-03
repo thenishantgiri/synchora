@@ -23,8 +23,7 @@ export const create = mutation({
     workspaceId: v.id("workspaces"),
     channelId: v.optional(v.id("channels")),
     parentMessageId: v.optional(v.id("messages")),
-
-    // TODO: Add conversationId for direct messages
+    conversationId: v.optional(v.id("conversations")),
   },
   handler: async (ctx, args) => {
     const userId = await auth.getUserId(ctx);
@@ -39,7 +38,27 @@ export const create = mutation({
       throw new Error("User is not a member of the workspace");
     }
 
-    //   TODO: Handle conversationId
+    let _conversationId = args.conversationId;
+
+    // Only possible if the message is a reply in a thread in 1:1 conversation
+    if (!args.conversationId && !args.channelId && args.parentMessageId) {
+      const parentMessage = await ctx.db.get(args.parentMessageId);
+      if (!parentMessage) {
+        throw new Error("Parent message not found");
+      }
+
+      // Ensure the parent message belongs to the same workspace
+      if (parentMessage.workspaceId !== args.workspaceId) {
+        throw new Error("Parent message does not belong to the same workspace");
+      }
+
+      // If the parent message is in a conversation, set the conversationId
+      if (parentMessage.conversationId) {
+        _conversationId = parentMessage.conversationId;
+      } else {
+        args.channelId = parentMessage.channelId;
+      }
+    }
 
     const messageId = await ctx.db.insert("messages", {
       body: args.body,
@@ -47,6 +66,7 @@ export const create = mutation({
       memberId: member._id,
       workspaceId: args.workspaceId,
       channelId: args.channelId,
+      conversationId: _conversationId,
       parentMessageId: args.parentMessageId,
       updatedAt: Date.now(),
     });
