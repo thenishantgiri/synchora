@@ -48,11 +48,9 @@ export const UserItem = ({
       aria-label={`Go to ${label}'s profile`}
     >
       <Link href={`/workspace/${workspaceId}/member/${id}`}>
-        <Avatar className="size-5 rounded-md mr-1">
-          <AvatarImage className="rounded-md" src={image} />
-          <AvatarFallback className="rounded-md bg-sky-700 text-white text-xs">
-            {avatarFallback}
-          </AvatarFallback>
+        <Avatar className="size-5 mr-1">
+          <AvatarImage src={image} />
+          <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
         <span className="text-sm truncate">{label}</span>
       </Link>

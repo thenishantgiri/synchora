@@ -123,9 +123,10 @@ const processReactions = (reactions: Doc<"reactions">[]) => {
     }
   });
 
-  return Array.from(reactionMap.values()).map(
-    ({ memberIds, ...reaction }) => reaction
-  );
+  return Array.from(reactionMap.values()).map(({ memberIds, ...reaction }) => ({
+    ...reaction,
+    memberIds: Array.from(memberIds),
+  }));
 };
 
 export const get = query({

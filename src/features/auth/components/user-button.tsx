@@ -40,15 +40,16 @@ export const UserButton = () => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="outline-none relative" asChild>
-        <Avatar className="rounded-md size-10 hover:opacity-75 transition">
-          <AvatarImage className="rounded-md" alt={name} src={image} />
-          <AvatarFallback className="rounded-md bg-sky-700 text-white">
-            {avatarFallback}
-          </AvatarFallback>
+        <Avatar className="size-10 hover:opacity-75 transition cursor-pointer">
+          <AvatarImage alt={name} src={image} />
+          <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" side="right" className="w-60">
-        <DropdownMenuItem onClick={handleLogout} className="h-10ß">
+        <DropdownMenuItem
+          onClick={handleLogout}
+          className="h-10 cursor-pointer"
+        >
           <LogOut className="size-4 mr-2" />
           Log out
         </DropdownMenuItem>
