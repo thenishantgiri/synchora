@@ -129,6 +129,85 @@ const processReactions = (reactions: Doc<"reactions">[]) => {
   }));
 };
 
+export const update = mutation({
+  args: {
+    id: v.id("messages"),
+    body: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await auth.getUserId(ctx);
+
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    // Get the message to update
+    const message = await ctx.db.get(args.id);
+    if (!message) {
+      throw new Error("Message not found");
+    }
+
+    // Get the member who created the message
+    const member = await ctx.db.get(message.memberId);
+    if (!member) {
+      throw new Error("Message author not found");
+    }
+
+    // Verify the current user is the author of the message
+    if (member.userId !== userId) {
+      throw new Error("You can only edit your own messages");
+    }
+
+    // Update the message
+    await ctx.db.patch(args.id, {
+      body: args.body,
+      updatedAt: Date.now(),
+    });
+
+    return args.id;
+  },
+});
+
+export const remove = mutation({
+  args: {
+    id: v.id("messages"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await auth.getUserId(ctx);
+
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    // Get the message to delete
+    const message = await ctx.db.get(args.id);
+    if (!message) {
+      throw new Error("Message not found");
+    }
+
+    // Get the member who created the message
+    const member = await ctx.db.get(message.memberId);
+    if (!member) {
+      throw new Error("Message author not found");
+    }
+
+    // Verify the current user is the author
+    if (member.userId !== userId) {
+      throw new Error("You can only delete your own messages");
+    }
+
+    // Delete the image from storage if it exists
+    if (message.image) {
+      await ctx.storage.delete(message.image);
+    }
+
+    // Delete the message from database
+    await ctx.db.delete(args.id);
+
+    return args.id;
+  },
+});
+
 export const get = query({
   args: {
     workspaceId: v.id("workspaces"),
