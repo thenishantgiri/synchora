@@ -11,6 +11,7 @@ import { useCurrentMember } from "@/features/members/api/use-current-members";
 
 import { Message } from "./message";
 import { ChannelHero } from "./channel-hero";
+import { ConversationHero } from "./conversation-hero";
 
 const TIME_THRESHOLD = 5;
 
@@ -137,8 +138,14 @@ export const MessageList = ({
         </div>
       )}
 
+      {/* Channel Hero */}
       {variant === "channel" && channelName && channelCreationTime && (
         <ChannelHero name={channelName} creationTime={channelCreationTime} />
+      )}
+
+      {/* Member Hero (1:1 Conversation Hero) */}
+      {variant === "conversation" && (
+        <ConversationHero name={memberName} image={memberImage} />
       )}
     </div>
   );

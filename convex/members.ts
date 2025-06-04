@@ -74,3 +74,28 @@ export const current = query({
     return member;
   },
 });
+
+export const getById = query({
+  args: { id: v.id("members") },
+  handler: async (ctx, { id }) => {
+    const userId = await auth.getUserId(ctx);
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    const member = await ctx.db.get(id);
+    if (!member) {
+      throw new Error("Member not found");
+    }
+
+    const user = await populateUser(ctx, member.userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return {
+      ...member,
+      user,
+    };
+  },
+});
