@@ -213,6 +213,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
                   image={message.image}
                   threadCount={message.threadCount}
                   threadImage={message.threadImage}
+                  threadName={message.threadName}
                   threadTimestamp={message.threadTimestamp}
                   isEditing={editingId === message._id}
                   setEditingId={setEditingId}
