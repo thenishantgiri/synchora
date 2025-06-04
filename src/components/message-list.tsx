@@ -136,6 +136,7 @@ export const MessageList = ({
           </span>
         </div>
       )}
+
       {variant === "channel" && channelName && channelCreationTime && (
         <ChannelHero name={channelName} creationTime={channelCreationTime} />
       )}
