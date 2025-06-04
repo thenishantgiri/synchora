@@ -147,6 +147,11 @@ export const update = mutation({
       throw new Error("Message not found");
     }
 
+    const currentMember = await getMember(ctx, message.workspaceId, userId);
+    if (!currentMember) {
+      throw new Error("User is not a member of the workspace");
+    }
+
     // Get the member who created the message
     const member = await ctx.db.get(message.memberId);
     if (!member) {
@@ -185,6 +190,11 @@ export const remove = mutation({
       throw new Error("Message not found");
     }
 
+    const currentMember = await getMember(ctx, message.workspaceId, userId);
+    if (!currentMember) {
+      throw new Error("User is not a member of the workspace");
+    }
+
     // Get the member who created the message
     const member = await ctx.db.get(message.memberId);
     if (!member) {
@@ -205,6 +215,59 @@ export const remove = mutation({
     await ctx.db.delete(args.id);
 
     return args.id;
+  },
+});
+
+export const getById = query({
+  args: {
+    id: v.id("messages"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await auth.getUserId(ctx);
+
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    const message = await ctx.db.get(args.id);
+    if (!message) {
+      throw new Error("Message not found");
+    }
+
+    const currentMember = await getMember(ctx, message.workspaceId, userId);
+    if (!currentMember) {
+      throw new Error("User is not a member of the workspace");
+    }
+
+    const member = await populateMember(ctx, message.memberId);
+    if (!member) {
+      throw new Error("Message author not found");
+    }
+
+    const user = await populateUser(ctx, member.userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const image = message.image
+      ? await ctx.storage.getUrl(message.image)
+      : undefined;
+
+    const reactions = await populateReactions(ctx, message._id);
+    const processedReactions = processReactions(reactions);
+
+    const thread = await populateThread(ctx, message._id);
+
+    return {
+      ...message,
+      image,
+      member,
+      user,
+      reactions: processedReactions,
+      threadCount: thread.count,
+      threadImage: thread.image,
+      threadTimestamp: thread.timestamp,
+    };
   },
 });
 

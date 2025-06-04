@@ -36,7 +36,12 @@ export const Toolbar = ({
         </EmojiPopover>
         {!hideThreadButton && (
           <Hint label="Reply in thread">
-            <Button variant={"ghost"} size={"iconSm"} disabled={isPending}>
+            <Button
+              variant={"ghost"}
+              size={"iconSm"}
+              disabled={isPending}
+              onClick={handleThread}
+            >
               <MessageSquareTextIcon className="!size-4" />
             </Button>
           </Hint>
