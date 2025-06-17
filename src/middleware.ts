@@ -15,8 +15,6 @@ export default convexAuthNextjsMiddleware((request) => {
   if (isPublicPage(request) && isAuthenticatedNextjs()) {
     return nextjsMiddlewareRedirect(request, "/");
   }
-
-  // Todo: redirect user away from "/signin" and "/signup" if they are already authenticated
 });
 
 export const config = {
