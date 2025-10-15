@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { TriangleAlert } from "lucide-react";
@@ -81,6 +82,14 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             type="password"
             required
           />
+          <div className="flex justify-end">
+            <Link
+              href="/auth/forgot-password"
+              className="text-xs text-sky-700 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <Button type="submit" className="w-full" size="lg" disabled={pending}>
             Continue
           </Button>
