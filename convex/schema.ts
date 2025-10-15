@@ -55,6 +55,14 @@ const schema = defineSchema({
     .index("by_workspace_id", ["workspaceId"])
     .index("by_message_id", ["messageId"])
     .index("by_member_id", ["memberId"]),
+  emailVerificationTokens: defineTable({
+    email: v.string(),
+    codeHash: v.string(),
+    expiresAt: v.number(),
+    attempts: v.optional(v.number()),
+  })
+    .index("by_email", ["email"])
+    .index("by_email_code_hash", ["email", "codeHash"]),
 });
 
 export default schema;
