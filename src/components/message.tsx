@@ -17,7 +17,6 @@ import { Hint } from "./hint";
 import { Thumbnail } from "./thumbnail";
 import { Toolbar } from "./toolbar";
 import { Reactions } from "./reactions";
-import { on } from "events";
 import { ThreadBar } from "./thread-bar";
 
 const Renderer = dynamic(() => import("@/components/renderer"), {

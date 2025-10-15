@@ -2,7 +2,15 @@ import { v } from "convex/values";
 
 import { auth } from "./auth";
 import { mutation, query } from "./_generated/server";
-import { normalizeChannelName } from "@/lib/utils";
+
+const normalizeChannelName = (input: string) =>
+  input
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 export const remove = mutation({
   args: {
