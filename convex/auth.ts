@@ -13,7 +13,6 @@ const CustomPassword = Password<DataModel>({
       phone: params.phone as string,
     };
   },
-  },
 });
 
 export const { auth, signIn, signOut, store } = convexAuth({
